@@ -62,6 +62,7 @@ function saveRecipesToStorage(recipes) {
 	// B1. TODO - Complete the functionality as described in this function
 	//            header. It is possible in only a single line, but should
 	//            be no more than a few lines.
+	localStorage.setItem('recipes', JSON.stringify(recipes));
 }
 
 /**
@@ -70,6 +71,7 @@ function saveRecipesToStorage(recipes) {
  */
 function initFormHandler() {
 	// B2. TODO - Get a reference to the <form> element
+	const form = document.querySelector('form');
 	// B3. TODO - Add an event listener for the 'submit' event, which fires when the
 	//            submit button is clicked
 	// Steps B4-B9 will occur inside the event listener from step B3
@@ -82,9 +84,35 @@ function initFormHandler() {
 	// B8. TODO - Append this new <recipe-card> to <main>
 	// B9. TODO - Get the recipes array from localStorage, add this new recipe to it, and
 	//            then save the recipes array back to localStorage
+	const submitButton = document.querySelector('submit');
+	form.addEventListener('submit', function(event) {
+		event.preventDefault();
+		const formData = new FormData(form);
+		const recipeObject = {};
+		formData.forEach((value, key) => {
+            recipeObject[key] = value;
+        });
+		const recipeCard = document.createElement('recipe-card');
+		recipeCard.data = recipeObject;	
+		const main = document.querySelector('main');
+		main.appendChild(recipeCard);	  
+		const recipes = getRecipesFromStorage();
+		addRecipesToDocument(recipes);
+		saveRecipesToStorage(recipes);
+	});
+	
 	// B10. TODO - Get a reference to the "Clear Local Storage" button
+	const clearButton = document.querySelector('.danger');
 	// B11. TODO - Add a click event listener to clear local storage button
 	// Steps B12 & B13 will occur inside the event listener from step B11
 	// B12. TODO - Clear the local storage
 	// B13. TODO - Delete the contents of <main>
+	clearButton.addEventListener('click', function() {
+		const main = document.querySelector('main');
+		localStorage.clear();
+		while (main.firstChild) {
+			main.removeChild(main.firstChild);
+		}
+	});
+	
 }
